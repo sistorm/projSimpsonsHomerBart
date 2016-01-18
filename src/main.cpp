@@ -51,6 +51,8 @@ int main( int argc, char** argv )
 	// Feature variables
 	float fOrange;
 	float fWhite;
+	float fSkin;
+	float fShortBart;
 
 	// Variable filename
 	static char cFileName[ 50 ] = {'\0'};
@@ -130,6 +132,8 @@ int main( int argc, char** argv )
 		// Initialize variables with zero 
 		fOrange 	= 0.0;
 		fWhite 	= 0.0;
+		fSkin = 0.0;
+		fShortBart = 0.0;
 
 		// Loop that reads each image pixel
 		for( h = 0; h < img->height; h++ ) // rows
@@ -153,10 +157,11 @@ int main( int argc, char** argv )
 					fOrange++;
 				
 					// Just to be sure we are doing the right thing, we change the color of the orange pixels to green [R=0, G=255, B=0] and show them into a cloned image (processed)
-				
+					/*
 					( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 0 ] = 0; 
 					( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 1 ] = 255; 
 					( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 2 ] = 0; 
+					*/
 				}
 				
 				// Detect and count the number of white pixels (just a dummy feature...)
@@ -168,6 +173,30 @@ int main( int argc, char** argv )
 				
 				// Here you can add your own features....... Good luck
 				
+				// Detect and count the number of skin pixels
+				if (blue >= 0 && blue <= 33 && green >= 185 && green <= 215 && red >= 235 && red <= 255)
+				{
+					fSkin++;
+
+					// Just to be sure we are doing the right thing, we change the color of the orange pixels to green [R=0, G=255, B=0] and show them into a cloned image (processed)
+					/*
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 0] = 0;
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 1] = 255;
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 2] = 0;
+					*/
+				}
+				// Here you can add your own features....... Good luck
+				// Detect and count the number of skin pixels
+				if (blue >= 130 && blue <= 135 && green >= 0 && green <= 15 && red >= 0 && red <= 0)
+				{
+					fShortBart++;
+
+					// Just to be sure we are doing the right thing, we change the color of the orange pixels to green [R=0, G=255, B=0] and show them into a cloned image (processed)
+
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 0] = 0;
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 1] = 255;
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 2] = 0;
+				}
 			}
 		}
 
@@ -176,22 +205,25 @@ int main( int argc, char** argv )
 		// Normalize the feature by the image size
 		fOrange 	= fOrange / ( (int)img->height * (int)img->width );
 		fWhite  	= fWhite  / ( (int)img->height * (int)img->width );
+		fSkin = fSkin / ((int)img->height * (int)img->width);
+		fShortBart = fShortBart / ((int)img->height * (int)img->width);
 
 		// Store the feature value in the columns of the feature (matrix) vector
 		fVector[iNum][1] = fOrange;
 		fVector[iNum][2] = fWhite;
-		
+		fVector[iNum][3] = fSkin;
+		fVector[iNum][4] = fShortBart;
 		// Here you can add more features to your feature vector by filling the other columns: fVector[iNum][3] = ???; fVector[iNum][4] = ???;
 		
 		// Shows the feature vector at the screen
-		printf( "\n%d %f %f", iNum, fVector[iNum][1], fVector[iNum][2] );
+		printf("\n%d orange: %f | blanc:  %f | skin: %f | shortBart: %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4]);
 		//printf( "\n%d %f %f %f %f %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5] );
 
 		// And finally, store your features in a file
 		fprintf( fp, "%f,", fVector[iNum][1]);
 		fprintf( fp, "%f,", fVector[iNum][2]);
-		//fprintf( fp, "%f,", fVector[iNum][3]);
-		//fprintf( fp, "%f,", fVector[iNum][4]);
+		fprintf( fp, "%f,", fVector[iNum][3]);
+		fprintf( fp, "%f,", fVector[iNum][4]);
 		//fprintf( fp, "%f,", fVector[iNum][5]);
 		
 		// IMPORTANT
@@ -247,6 +279,8 @@ int main( int argc, char** argv )
 		// Initialize variables with zero 
 		fOrange 	= 0.0;
 		fWhite 	= 0.0;
+		fSkin = 0.0;
+		fShortBart = 0.0;
 
 		// Loop that reads each image pixel
 		for( h = 0; h < img->height; h++ ) // rows
@@ -270,10 +304,11 @@ int main( int argc, char** argv )
 					fOrange++;
 				
 					// Just to be sure we are doing the right thing, we change the color of the orange pixels to green [R=0, G=255, B=0] and show them into a cloned image (processed)
-				
+					/*
 					( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 0 ] = 0; 
 					( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 1 ] = 255; 
 					( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 2 ] = 0; 
+					*/
 				}
 				
 				// Detect and count the number of white pixels (just a dummy feature...)
@@ -284,7 +319,31 @@ int main( int argc, char** argv )
 				}
 				
 				// Here you can add your own features....... Good luck
-				
+				// Detect and count the number of skin pixels
+				if (blue >= 0 && blue <= 33 && green >= 185 && green <= 215 && red >= 235 && red <= 255)
+				{
+					fSkin++;
+
+					// Just to be sure we are doing the right thing, we change the color of the orange pixels to green [R=0, G=255, B=0] and show them into a cloned image (processed)
+					/*
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 0] = 0;
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 1] = 255;
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 2] = 0;
+					*/
+				}
+
+				// Here you can add your own features....... Good luck
+				// Detect and count the number of skin pixels
+				if (blue >= 130 && blue <= 135 && green >= 0 && green <= 15 && red >= 0 && red <= 0)
+				{
+					fShortBart++;
+
+					// Just to be sure we are doing the right thing, we change the color of the orange pixels to green [R=0, G=255, B=0] and show them into a cloned image (processed)
+
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 0] = 0;
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 1] = 255;
+					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 2] = 0;
+				}
 			}
 		}
 
@@ -293,22 +352,24 @@ int main( int argc, char** argv )
 		// Normalize the feature by the image size
 		fOrange 	= fOrange / ( (int)img->height * (int)img->width );
 		fWhite  	= fWhite  / ( (int)img->height * (int)img->width );
-
+		fSkin = fSkin / ((int)img->height * (int)img->width);
+		fShortBart = fShortBart / ((int)img->height * (int)img->width);
 		// Store the feature value in the columns of the feature (matrix) vector
 		fVector[iNum][1] = fOrange;
 		fVector[iNum][2] = fWhite;
-		
+		fVector[iNum][3] = fSkin;
+		fVector[iNum][4] = fShortBart;
 		// Here you can add more features to your feature vector by filling the other columns: fVector[iNum][3] = ???; fVector[iNum][4] = ???;
-		
+
 		// Shows the feature vector at the screen
-		printf( "\n%d %f %f", iNum, fVector[iNum][1], fVector[iNum][2] );
+		printf("\n%d orange: %f | blanc:  %f | skin: %f | shortBart: %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4]);
 		//printf( "\n%d %f %f %f %f %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5] );
 
 		// And finally, store your features in a file
-		fprintf( fp, "%f,", fVector[iNum][1]);
-		fprintf( fp, "%f,", fVector[iNum][2]);
-		//fprintf( fp, "%f,", fVector[iNum][3]);
-		//fprintf( fp, "%f,", fVector[iNum][4]);
+		fprintf(fp, "%f,", fVector[iNum][1]);
+		fprintf(fp, "%f,", fVector[iNum][2]);
+		fprintf(fp, "%f,", fVector[iNum][3]);
+		fprintf(fp, "%f,", fVector[iNum][4]);
 		//fprintf( fp, "%f,", fVector[iNum][5]);
 		
 		// IMPORTANT
