@@ -22,8 +22,10 @@
 
 // Bart Train: 80 items: bart1.bmp - bart80.bmp
 // Homer Train 62 items: homer1.bmp - homer62.bmp
+// Lisa Train 33 items: lisa1.bmp - lisa33.bmp
 // Bart Valid: 54 items: bart116.bmp - bart169.bmp
 // Homer Valid: 37 items: homer88.bmp - homer124.bmp
+// Lisa Valid: 12 items: lisa34.bmp - lisa46.bmp
 
 // MAIN
 int main( int argc, char** argv )   
@@ -53,6 +55,8 @@ int main( int argc, char** argv )
 	float fWhite;
 	float fSkin;
 	float fShortBart;
+	float fLisaDress;
+	float fHomerBeard
 
 	// Variable filename
 	static char cFileName[ 50 ] = {'\0'};
@@ -385,6 +389,133 @@ int main( int argc, char** argv )
 		tecla = cvWaitKey(0);
 	}
 
+
+	// *****************************************************************************************************************************************
+	// *****************************************************************************************************************************************
+	// *****************************************************************************************************************************************
+	// TRAINING SAMPLES 
+	// LISA
+	// Lisa Train: 33 items: lisa1.bmp - lisa33.bmp
+	// The code below is exactly the same for HOMER, except that we have changed the values of iNum and Homer -> Lisa
+	// along the file
+	// *****************************************************************************************************************************************
+
+	// Take all the image files at the range
+	for ( iNum = 1; iNum <= 33; iNum++ )
+	{
+		// Build the image filename and path to read from disk
+		sprintf ( cFileName, "Train/lisa%d.bmp", (int)(iNum) ); 
+		//sprintf ( cFileName, "Valid/lisa%d.bmp", (int)(iNum) ); 
+		printf ( " %s\n", cFileName);
+
+		// Load the image from disk to the structure img.
+		// 1  - Load a 3-channel image (color)
+		// 0  - Load a 1-channel image (gray level)
+		// -1 - Load the image as it is  (depends on the file)
+		
+		img = cvLoadImage( cFileName, -1 );
+
+		// Gets the image size (width, height) 'img' 
+		tam = cvGetSize( img );
+
+		// Creates a header and allocates memory (tam) to store a copy of the original image.
+		// 1 - gray level image
+		// 3 - color image	
+		// processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
+
+		// Make a image clone and store it at processed and threshold
+		processed 	= cvCloneImage( img );
+		threshold  		= cvCloneImage( img );
+
+		// Initialize variables with zero 
+		fOrange 	= 0.0;
+		fWhite 	= 0.0;
+		fSkin = 0.0;
+		fShortBart = 0.0;
+		fLisaDress = 0.0;
+		fHomerBeard = 0.0;
+
+		// Loop that reads each image pixel
+		for( h = 0; h < img->height; h++ ) // rows
+		{
+			for( w = 0; w < img->width; w++ ) // columns
+			{
+				// Read each channel and writes it into the blue, green and red variables. Notice that OpenCV considers BGR
+				blue  	= ( (uchar *)(img->imageData + h*img->widthStep) )[ w*img->nChannels + 0 ];
+				green 	= ( (uchar *)(img->imageData + h*img->widthStep) )[ w*img->nChannels + 1 ];
+				red   		= ( (uchar *)(img->imageData + h*img->widthStep) )[ w*img->nChannels + 2 ];
+
+				// Shows the pixel value at the screenl
+				//printf( "pixel[%d][%d]= %d %d %d \n", h, w, (int)blue, (int)green, (int)red );
+
+				// Here starts the feature extraction....
+				
+				// Detect and count the number of orange pixels
+				fOrange = countOrange(red,green,blue);
+				
+				// Detect and count the number of white pixels (just a dummy feature...)
+				fWhite = countWhite(red,green,blue);
+				
+				// Here you can add your own features....... Good luck
+				// Detect and count the number of skin pixels
+				fSkin = countSkin(red,green,blue);
+
+				// Detect and count the number of skin pixels
+				fShortBart = countShortBart(red,green,blue);
+
+				// Detect and count the number of pixels coresponding to the DRESS OF LISA
+				fLisaDress = countLisaDress(red,green,blue);
+
+				// Detect and count the number of pixels coresponding to the BEAR OF HOMER
+				fHomerBeard = countHomerBeard(red,green,blue);
+			}
+		}
+
+		// Lets make our counting somewhat independent on the image size...
+		// Compute the percentage of pixels of a given colour.
+		// Normalize the feature by the image size
+		fOrange 	= fOrange / ( (int)img->height * (int)img->width );
+		fWhite  	= fWhite  / ( (int)img->height * (int)img->width );
+		fSkin = fSkin / ((int)img->height * (int)img->width);
+		fShortBart = fShortBart / ((int)img->height * (int)img->width);
+		fLisaDress = fLisaDress / ((int)img->height * (int)img->width);
+		fHomerBeard = fHomerBeard / ((int)img->height * (int)img->width);
+		// Store the feature value in the columns of the feature (matrix) vector
+		fVector[iNum][1] = fOrange;
+		fVector[iNum][2] = fWhite;
+		fVector[iNum][3] = fSkin;
+		fVector[iNum][4] = fShortBart;
+		fVector[iNum][5] = fLisaDress;
+		//fVector[iNum][6] = fHomerBeard;
+
+		// Here you can add more features to your feature vector by filling the other columns: fVector[iNum][3] = ???; fVector[iNum][4] = ???;
+
+		// Shows the feature vector at the screen
+		printf("\n%d orange: %f | blanc:  %f | skin: %f | shortBart: %f | dressLisa: %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5]);
+		//printf( "\n%d %f %f %f %f %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5] );
+
+		// And finally, store your features in a file
+		fprintf(fp, "%f,", fVector[iNum][1]);
+		fprintf(fp, "%f,", fVector[iNum][2]);
+		fprintf(fp, "%f,", fVector[iNum][3]);
+		fprintf(fp, "%f,", fVector[iNum][4]);
+		fprintf( fp, "%f,", fVector[iNum][5]);
+		//fprintf( fp, "%f,", fVector[iNum][6]);
+
+		
+		// IMPORTANT
+		// Do not forget the label.... 	
+		fprintf( fp, "%s\n", "Lisa");
+
+
+		// Finally, give a look at the original image and the image with the pixels of interest in green
+		cvShowImage( "Original", img );
+		cvShowImage( "Processed", processed );
+		
+		// Wait until a key is pressed to continue... 	
+		tecla = cvWaitKey(0);
+	}
+
 	cvReleaseImage(&img);
 	cvDestroyWindow("Original");
 
@@ -395,3 +526,111 @@ int main( int argc, char** argv )
 
 	return 0;
 } 
+
+
+
+
+int countHomerBeard(int red, int green, int blue)
+{
+	// Detect and count the number of pixels coresponding pixels to the DRESS OF LISA
+	int fHomerBeard = 0;
+
+	//Homer Beard --> Red=189, Green=173, Blue=107
+	if (red >= 187 && red <= 191 && green >= 171 && green <= 109 &&  blue >= 105 && blue <= 109)
+	{
+		fHomerBeard++;
+
+	}
+	return fHomerBeard;
+}
+
+int countShortBart(int red, int green, int blue)
+{
+	// Detect and count the number of pixels coresponding pixels to the SHORT OF BART
+	int fShortBart = 0;
+
+	if (blue >= 130 && blue <= 135 && green >= 0 && green <= 15 && red >= 0 && red <= 0)
+	{
+		fShortBart++;
+
+		// Just to be sure we are doing the right thing, we change the color of the orange pixels to green [R=0, G=255, B=0] and show them into a cloned image (processed)
+
+		((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 0] = 0;
+		((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 1] = 255;
+		((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 2] = 0;
+	}
+	return fShortBart;
+}
+
+
+int countLisaDress(int red, int green, int blue)
+{
+	// Detect and count the number of pixels coresponding to the dress of Lisa
+	int fLisaDress = 0;
+
+	//Lisa Dress --> Red=255, Green=0, Blue=0
+	if (red >= 253 && red <= 255 && green >= 0 && green <= 3 &&  blue >= 0 && blue <= 3)
+	{
+		fLisaDress++;
+
+	}
+	return fLisaDress;
+}
+
+
+int countSkin(int red, int green, int blue)
+{
+	// Detect and count the number of skin pixels
+	int fSkin = 0;
+	
+	if (blue >= 0 && blue <= 33 && green >= 185 && green <= 215 && red >= 235 && red <= 255)
+	{
+		fSkin++;
+
+		// Just to be sure we are doing the right thing, we change the color of the orange pixels to green [R=0, G=255, B=0] and show them into a cloned image (processed)
+		/*
+		((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 0] = 0;
+		((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 1] = 255;
+		((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 2] = 0;
+		*/
+	}
+
+	return fSkin;
+}
+
+
+int countWhite(int red, int green, int blue)
+{
+	// Detect and count the number of white pixels
+	int fWhite = 0;
+	
+	// Verify if the pixels have a given value ( White, defined as R[253-255], G[253-255], B[253-255] ). If so, count it...
+	if ( blue >= 253 && green >= 253 && red >= 253 )
+	{
+		fWhite++;
+	}
+
+	return fWhite;
+}
+
+
+int countOrange(int red, int green, int blue)
+{
+	// Detect and count the number of orange pixels
+	int fOrange = 0;
+	
+	// Verify if the pixels have a given value ( Orange, defined as R[240-255], G[85-105], B[11-22] ). If so, count it...
+	if ( blue>=11 && blue<=22 && green>=85 && green<=105 &&  red>=240 && red<=255 )
+	{
+		fOrange++;
+	
+		// Just to be sure we are doing the right thing, we change the color of the orange pixels to green [R=0, G=255, B=0] and show them into a cloned image (processed)
+		/*
+		( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 0 ] = 0; 
+		( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 1 ] = 255; 
+		( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 2 ] = 0; 
+		*/
+	}
+
+	return fOrange;
+}
