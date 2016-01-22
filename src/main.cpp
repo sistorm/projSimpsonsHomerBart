@@ -18,7 +18,17 @@
 
 // DEFINES
 #define NUM_SAMPLES 100
-#define NUM_FEATURES 5
+#define NUM_FEATURES 9
+
+// FONCTIONS
+int countOrange(int red, int green, int blue);
+int countWhite(int red, int green, int blue);
+int countSkin(int red, int green, int blue);
+int countShortBart(int red, int green, int blue);
+int countLisaDress(int red, int green, int blue);
+int countHomerBeard(int red, int green, int blue);
+int countHomerPants(int red, int green, int blue);
+int countHomerShoes(int red, int green, int blue);
 
 // Bart Train: 80 items: bart1.bmp - bart80.bmp
 // Homer Train 62 items: homer1.bmp - homer62.bmp
@@ -56,7 +66,10 @@ int main( int argc, char** argv )
 	float fSkin;
 	float fShortBart;
 	float fLisaDress;
-	float fHomerBeard
+	float fHomerBeard;
+	float fHomerPants;
+	float fHomerShoes;
+
 
 	// Variable filename
 	static char cFileName[ 50 ] = {'\0'};
@@ -76,7 +89,7 @@ int main( int argc, char** argv )
 	// IplImage structure contains several information of the image (See OpenCV manual).	
 	IplImage *img 			= NULL;
 	IplImage *processed 	= NULL;
-	IplImage *threshold 		= NULL;
+	IplImage *threshold 	= NULL;
 	
 	// OpenCV variable that stores the image width and height
 	CvSize tam;
@@ -138,6 +151,10 @@ int main( int argc, char** argv )
 		fWhite 	= 0.0;
 		fSkin = 0.0;
 		fShortBart = 0.0;
+		fLisaDress = 0.0;
+		fHomerBeard = 0.0;
+		fHomerPants = 0.0;
+		fHomerShoes = 0.0;
 
 		// Loop that reads each image pixel
 		for( h = 0; h < img->height; h++ ) // rows
@@ -151,7 +168,7 @@ int main( int argc, char** argv )
 
 				// Shows the pixel value at the screenl
 				//printf( "pixel[%d][%d]= %d %d %d \n", h, w, (int)blue, (int)green, (int)red );
-
+/*
 				// Here starts the feature extraction....
 				
 				// Detect and count the number of orange pixels
@@ -166,7 +183,7 @@ int main( int argc, char** argv )
 					( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 1 ] = 255; 
 					( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 2 ] = 0; 
 					*/
-				}
+/*				}
 				
 				// Detect and count the number of white pixels (just a dummy feature...)
 				// Verify if the pixels have a given value ( White, defined as R[253-255], G[253-255], B[253-255] ). If so, count it...
@@ -188,7 +205,7 @@ int main( int argc, char** argv )
 					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 1] = 255;
 					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 2] = 0;
 					*/
-				}
+/*				}
 				// Here you can add your own features....... Good luck
 				// Detect and count the number of skin pixels
 				if (blue >= 130 && blue <= 135 && green >= 0 && green <= 15 && red >= 0 && red <= 0)
@@ -201,6 +218,33 @@ int main( int argc, char** argv )
 					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 1] = 255;
 					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 2] = 0;
 				}
+*/
+				// Detect and count the number of orange pixels
+				fOrange = countOrange(red, green, blue);
+
+				// Detect and count the number of white pixels (just a dummy feature...)
+				fWhite = countWhite(red, green, blue);
+
+				// Here you can add your own features....... Good luck
+				// Detect and count the number of skin pixels
+				fSkin = countSkin(red, green, blue);
+
+				// Detect and count the number of skin pixels
+				fShortBart = countShortBart(red, green, blue);
+
+				// Detect and count the number of pixels coresponding to the DRESS OF LISA
+				fLisaDress = countLisaDress(red, green, blue);
+
+				// Detect and count the number of pixels coresponding to the BEAR OF HOMER
+				fHomerBeard = countHomerBeard(red, green, blue);
+
+				// Detect and count the number of pixels coresponding to the PANTS OF HOMER
+				fHomerPants = countHomerPants(red, green, blue);
+
+				// Detect and count the number of pixels coresponding to the SHOES OF HOMER
+				fHomerShoes = countHomerShoes(red, green, blue);
+
+
 			}
 		}
 
@@ -211,16 +255,25 @@ int main( int argc, char** argv )
 		fWhite  	= fWhite  / ( (int)img->height * (int)img->width );
 		fSkin = fSkin / ((int)img->height * (int)img->width);
 		fShortBart = fShortBart / ((int)img->height * (int)img->width);
+		fLisaDress = fLisaDress / ((int)img->height * (int)img->width);
+		fHomerBeard = fHomerBeard / ((int)img->height * (int)img->width);
+		fHomerPants = fHomerPants / ((int)img->height * (int)img->width);
+		fHomerShoes = fHomerShoes / ((int)img->height * (int)img->width);
 
 		// Store the feature value in the columns of the feature (matrix) vector
 		fVector[iNum][1] = fOrange;
 		fVector[iNum][2] = fWhite;
 		fVector[iNum][3] = fSkin;
 		fVector[iNum][4] = fShortBart;
+		fVector[iNum][5] = fLisaDress;
+		fVector[iNum][6] = fHomerBeard;
+		fVector[iNum][7] = fHomerPants;
+		fVector[iNum][8] = fHomerShoes;
+
 		// Here you can add more features to your feature vector by filling the other columns: fVector[iNum][3] = ???; fVector[iNum][4] = ???;
 		
 		// Shows the feature vector at the screen
-		printf("\n%d orange: %f | blanc:  %f | skin: %f | shortBart: %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4]);
+		printf("\n%d orange: %f | blanc:  %f | skin: %f | shortBart: %f | lisaDress: %f | homerBeard: %f | homerPants: %f | homerShoes: %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5], fVector[iNum][6], fVector[iNum][7], fVector[iNum][8]);
 		//printf( "\n%d %f %f %f %f %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5] );
 
 		// And finally, store your features in a file
@@ -228,7 +281,10 @@ int main( int argc, char** argv )
 		fprintf( fp, "%f,", fVector[iNum][2]);
 		fprintf( fp, "%f,", fVector[iNum][3]);
 		fprintf( fp, "%f,", fVector[iNum][4]);
-		//fprintf( fp, "%f,", fVector[iNum][5]);
+		fprintf( fp, "%f,", fVector[iNum][5]);
+		fprintf( fp, "%f,", fVector[iNum][6]);
+		fprintf( fp, "%f,", fVector[iNum][7]);
+		fprintf( fp, "%f,", fVector[iNum][8]);
 		
 		// IMPORTANT
 		// Do not forget the label.... 	
@@ -278,13 +334,17 @@ int main( int argc, char** argv )
 
 		// Make a image clone and store it at processed and threshold
 		processed 	= cvCloneImage( img );
-		threshold  		= cvCloneImage( img );
+		threshold  	= cvCloneImage( img );
 
 		// Initialize variables with zero 
 		fOrange 	= 0.0;
 		fWhite 	= 0.0;
 		fSkin = 0.0;
 		fShortBart = 0.0;
+		fLisaDress = 0.0;
+		fHomerBeard = 0.0;
+		fHomerPants = 0.0;
+		fHomerShoes = 0.0;
 
 		// Loop that reads each image pixel
 		for( h = 0; h < img->height; h++ ) // rows
@@ -300,7 +360,7 @@ int main( int argc, char** argv )
 				//printf( "pixel[%d][%d]= %d %d %d \n", h, w, (int)blue, (int)green, (int)red );
 
 				// Here starts the feature extraction....
-				
+/*				
 				// Detect and count the number of orange pixels
 				// Verify if the pixels have a given value ( Orange, defined as R[240-255], G[85-105], B[11-22] ). If so, count it...
 				if ( blue>=11 && blue<=22 && green>=85 && green<=105 &&  red>=240 && red<=255 )
@@ -313,7 +373,7 @@ int main( int argc, char** argv )
 					( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 1 ] = 255; 
 					( (uchar *)(processed->imageData + h*processed->widthStep) )[ w*processed->nChannels + 2 ] = 0; 
 					*/
-				}
+/*				}
 				
 				// Detect and count the number of white pixels (just a dummy feature...)
 				// Verify if the pixels have a given value ( White, defined as R[253-255], G[253-255], B[253-255] ). If so, count it...
@@ -334,7 +394,7 @@ int main( int argc, char** argv )
 					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 1] = 255;
 					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 2] = 0;
 					*/
-				}
+/*				}
 
 				// Here you can add your own features....... Good luck
 				// Detect and count the number of skin pixels
@@ -348,6 +408,33 @@ int main( int argc, char** argv )
 					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 1] = 255;
 					((uchar *)(processed->imageData + h*processed->widthStep))[w*processed->nChannels + 2] = 0;
 				}
+*/
+
+				// Detect and count the number of orange pixels
+				fOrange = countOrange(red, green, blue);
+
+				// Detect and count the number of white pixels (just a dummy feature...)
+				fWhite = countWhite(red, green, blue);
+
+				// Here you can add your own features....... Good luck
+				// Detect and count the number of skin pixels
+				fSkin = countSkin(red, green, blue);
+
+				// Detect and count the number of skin pixels
+				fShortBart = countShortBart(red, green, blue);
+
+				// Detect and count the number of pixels coresponding to the DRESS OF LISA
+				fLisaDress = countLisaDress(red, green, blue);
+
+				// Detect and count the number of pixels coresponding to the BEAR OF HOMER
+				fHomerBeard = countHomerBeard(red, green, blue);
+
+				// Detect and count the number of pixels coresponding to the PANTS OF HOMER
+				fHomerPants = countHomerPants(red, green, blue);
+
+				// Detect and count the number of pixels coresponding to the SHOES OF HOMER
+				fHomerShoes = countHomerShoes(red, green, blue);
+
 			}
 		}
 
@@ -358,15 +445,24 @@ int main( int argc, char** argv )
 		fWhite  	= fWhite  / ( (int)img->height * (int)img->width );
 		fSkin = fSkin / ((int)img->height * (int)img->width);
 		fShortBart = fShortBart / ((int)img->height * (int)img->width);
+		fLisaDress = fLisaDress / ((int)img->height * (int)img->width);
+		fHomerBeard = fHomerBeard / ((int)img->height * (int)img->width);
+		fHomerPants = fHomerPants / ((int)img->height * (int)img->width);
+		fHomerShoes = fHomerShoes / ((int)img->height * (int)img->width);
+
 		// Store the feature value in the columns of the feature (matrix) vector
 		fVector[iNum][1] = fOrange;
 		fVector[iNum][2] = fWhite;
 		fVector[iNum][3] = fSkin;
 		fVector[iNum][4] = fShortBart;
+		fVector[iNum][5] = fLisaDress;
+		fVector[iNum][6] = fHomerBeard;
+		fVector[iNum][7] = fHomerPants;
+		fVector[iNum][8] = fHomerShoes;
 		// Here you can add more features to your feature vector by filling the other columns: fVector[iNum][3] = ???; fVector[iNum][4] = ???;
 
 		// Shows the feature vector at the screen
-		printf("\n%d orange: %f | blanc:  %f | skin: %f | shortBart: %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4]);
+		printf("\n%d orange: %f | blanc:  %f | skin: %f | shortBart: %f | lisaDress: %f | homerBeard: %f | homerPants: %f | homerShoes: %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5], fVector[iNum][6], fVector[iNum][7], fVector[iNum][8]);
 		//printf( "\n%d %f %f %f %f %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5] );
 
 		// And finally, store your features in a file
@@ -374,7 +470,10 @@ int main( int argc, char** argv )
 		fprintf(fp, "%f,", fVector[iNum][2]);
 		fprintf(fp, "%f,", fVector[iNum][3]);
 		fprintf(fp, "%f,", fVector[iNum][4]);
-		//fprintf( fp, "%f,", fVector[iNum][5]);
+		fprintf(fp, "%f,", fVector[iNum][5]);
+		fprintf(fp, "%f,", fVector[iNum][6]);
+		fprintf(fp, "%f,", fVector[iNum][7]);
+		fprintf(fp, "%f,", fVector[iNum][8]);
 		
 		// IMPORTANT
 		// Do not forget the label.... 	
@@ -425,7 +524,7 @@ int main( int argc, char** argv )
 
 		// Make a image clone and store it at processed and threshold
 		processed 	= cvCloneImage( img );
-		threshold  		= cvCloneImage( img );
+		threshold  	= cvCloneImage( img );
 
 		// Initialize variables with zero 
 		fOrange 	= 0.0;
@@ -434,6 +533,8 @@ int main( int argc, char** argv )
 		fShortBart = 0.0;
 		fLisaDress = 0.0;
 		fHomerBeard = 0.0;
+		fHomerPants = 0.0;
+		fHomerShoes = 0.0;
 
 		// Loop that reads each image pixel
 		for( h = 0; h < img->height; h++ ) // rows
@@ -443,7 +544,7 @@ int main( int argc, char** argv )
 				// Read each channel and writes it into the blue, green and red variables. Notice that OpenCV considers BGR
 				blue  	= ( (uchar *)(img->imageData + h*img->widthStep) )[ w*img->nChannels + 0 ];
 				green 	= ( (uchar *)(img->imageData + h*img->widthStep) )[ w*img->nChannels + 1 ];
-				red   		= ( (uchar *)(img->imageData + h*img->widthStep) )[ w*img->nChannels + 2 ];
+				red   	= ( (uchar *)(img->imageData + h*img->widthStep) )[ w*img->nChannels + 2 ];
 
 				// Shows the pixel value at the screenl
 				//printf( "pixel[%d][%d]= %d %d %d \n", h, w, (int)blue, (int)green, (int)red );
@@ -468,6 +569,12 @@ int main( int argc, char** argv )
 
 				// Detect and count the number of pixels coresponding to the BEAR OF HOMER
 				fHomerBeard = countHomerBeard(red,green,blue);
+
+				// Detect and count the number of pixels coresponding to the PANTS OF HOMER
+				fHomerPants = countHomerPants(red, green, blue);
+
+				// Detect and count the number of pixels coresponding to the SHOES OF HOMER
+				fHomerShoes = countHomerShoes(red, green, blue);
 			}
 		}
 
@@ -480,18 +587,23 @@ int main( int argc, char** argv )
 		fShortBart = fShortBart / ((int)img->height * (int)img->width);
 		fLisaDress = fLisaDress / ((int)img->height * (int)img->width);
 		fHomerBeard = fHomerBeard / ((int)img->height * (int)img->width);
+		fHomerPants = fHomerPants / ((int)img->height * (int)img->width);
+		fHomerShoes = fHomerShoes / ((int)img->height * (int)img->width);
+
 		// Store the feature value in the columns of the feature (matrix) vector
 		fVector[iNum][1] = fOrange;
 		fVector[iNum][2] = fWhite;
 		fVector[iNum][3] = fSkin;
 		fVector[iNum][4] = fShortBart;
 		fVector[iNum][5] = fLisaDress;
-		//fVector[iNum][6] = fHomerBeard;
+		fVector[iNum][6] = fHomerBeard;
+		fVector[iNum][7] = fHomerPants;
+		fVector[iNum][8] = fHomerShoes;
 
 		// Here you can add more features to your feature vector by filling the other columns: fVector[iNum][3] = ???; fVector[iNum][4] = ???;
 
 		// Shows the feature vector at the screen
-		printf("\n%d orange: %f | blanc:  %f | skin: %f | shortBart: %f | dressLisa: %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5]);
+		printf("\n%d orange: %f | blanc:  %f | skin: %f | shortBart: %f | lisaDress: %f | homerBeard: %f | homerPants: %f | homerShoes: %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5], fVector[iNum][6], fVector[iNum][7], fVector[iNum][8]);
 		//printf( "\n%d %f %f %f %f %f", iNum, fVector[iNum][1], fVector[iNum][2], fVector[iNum][3], fVector[iNum][4], fVector[iNum][5] );
 
 		// And finally, store your features in a file
@@ -499,8 +611,10 @@ int main( int argc, char** argv )
 		fprintf(fp, "%f,", fVector[iNum][2]);
 		fprintf(fp, "%f,", fVector[iNum][3]);
 		fprintf(fp, "%f,", fVector[iNum][4]);
-		fprintf( fp, "%f,", fVector[iNum][5]);
-		//fprintf( fp, "%f,", fVector[iNum][6]);
+		fprintf(fp, "%f,", fVector[iNum][5]);
+		fprintf(fp, "%f,", fVector[iNum][6]);
+		fprintf(fp, "%f,", fVector[iNum][7]);
+		fprintf(fp, "%f,", fVector[iNum][8]);
 
 		
 		// IMPORTANT
@@ -542,6 +656,34 @@ int countHomerBeard(int red, int green, int blue)
 
 	}
 	return fHomerBeard;
+}
+
+int countHomerPants(int red, int green, int blue)
+{
+	// Detect and count the number of pixels coresponding pixels to the PANTS OF HOMER
+	int fHomerPants = 0;
+
+	//Homer Pants --> Red=74, Green=115, Blue=173
+	if (red >= 72 && red <= 76 && green >= 113 && green <= 117 && blue >= 171 && blue <= 175)
+	{
+		fHomerPants++;
+
+	}
+	return fHomerPants;
+}
+
+int countHomerShoes(int red, int green, int blue)
+{
+	// Detect and count the number of pixels coresponding pixels to the SHOES OF HOMER
+	int fHomerShoes = 0;
+
+	//Homer Shoes --> Red=66, Green=66, Blue=66
+	if (red >= 64 && red <= 68 && green >= 64 && green <= 68 && blue >= 64 && blue <= 68)
+	{
+		fHomerShoes++;
+
+	}
+	return fHomerShoes;
 }
 
 int countShortBart(int red, int green, int blue)
