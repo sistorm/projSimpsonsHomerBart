@@ -105,8 +105,8 @@ int main( int argc, char** argv )
 	// OpenCV variables related to the image structure.
 	// IplImage structure contains several information of the image (See OpenCV manual).	
 	IplImage *img 			= NULL;
-	//IplImage *processed 	= NULL;
-	//IplImage *threshold 	= NULL;
+	IplImage *processed 	= NULL;
+	IplImage *threshold 	= NULL;
 	
 	// OpenCV variable that stores the image width and height
 	CvSize tam;
@@ -151,7 +151,7 @@ int main( int argc, char** argv )
 		// 0  - Load a 1-channel image (gray level)
 		// -1 - Load the image as it is  (depends on the file)
 		cvReleaseImage(&img);
-		//cvReleaseImage(&processed);
+		cvReleaseImage(&processed);
 		img = cvLoadImage( cFileName, -1 );
 
 		// Gets the image size (width, height) 'img' 
@@ -160,10 +160,10 @@ int main( int argc, char** argv )
 		// Creates a header and allocates memory (tam) to store a copy of the original image.
 		// 1 - gray level image
 		// 3 - color image	
-		// processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
+		processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
 
 		// Make a image clone and store it at processed and threshold
-		//processed 	= cvCloneImage( img );
+		processed 	= cvCloneImage( img );
 		//threshold   = cvCloneImage( img );
 
 		// Initialize variables with zero 
@@ -291,11 +291,11 @@ int main( int argc, char** argv )
 
 		// Finally, give a look at the original image and the image with the pixels of interest in green
 		// OpenCV create an output window
-		//cvShowImage( "Original", img );
-		//cvShowImage( "Processed", processed );
+		cvShowImage( "Original", img );
+		cvShowImage( "Processed", processed );
 		
 		// Wait until a key is pressed to continue... 	
-		//tecla = cvWaitKey(0);
+		tecla = cvWaitKey(0);
 	}
 	
 	// *****************************************************************************************************************************************
@@ -321,7 +321,7 @@ int main( int argc, char** argv )
 		// 0  - Load a 1-channel image (gray level)
 		// -1 - Load the image as it is  (depends on the file)
 		cvReleaseImage(&img);
-		//cvReleaseImage(&processed);
+		cvReleaseImage(&processed);
 		img = cvLoadImage( cFileName, -1 );
 
 		// Gets the image size (width, height) 'img' 
@@ -330,10 +330,10 @@ int main( int argc, char** argv )
 		// Creates a header and allocates memory (tam) to store a copy of the original image.
 		// 1 - gray level image
 		// 3 - color image	
-		// processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
+		processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
 
 		// Make a image clone and store it at processed and threshold
-		//processed 	= cvCloneImage( img );
+		processed 	= cvCloneImage( img );
 		//threshold  	= cvCloneImage( img );
 
 		// Initialize variables with zero 
@@ -437,11 +437,11 @@ int main( int argc, char** argv )
 
 
 		// Finally, give a look at the original image and the image with the pixels of interest in green
-		//cvShowImage( "Original", img );
-		//cvShowImage( "Processed", processed );
+		cvShowImage( "Original", img );
+		cvShowImage( "Processed", processed );
 		
 		// Wait until a key is pressed to continue... 	
-		//tecla = cvWaitKey(0);
+		tecla = cvWaitKey(0);
 	}
 
 	// *****************************************************************************************************************************************
@@ -475,10 +475,10 @@ int main( int argc, char** argv )
 		// Creates a header and allocates memory (tam) to store a copy of the original image.
 		// 1 - gray level image
 		// 3 - color image	
-		// processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
+		processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
 
 		// Make a image clone and store it at processed and threshold
-		//processed 	= cvCloneImage( img );
+		processed 	= cvCloneImage( img );
 		//threshold  	= cvCloneImage( img );
 
 		// Initialize variables with zero 
@@ -583,11 +583,11 @@ int main( int argc, char** argv )
 
 
 		// Finally, give a look at the original image and the image with the pixels of interest in green
-		//cvShowImage( "Original", img );
-		//cvShowImage( "Processed", processed );
+		cvShowImage( "Original", img );
+		cvShowImage( "Processed", processed );
 		 
 		// Wait until a key is pressed to continue... 	
-		//tecla = cvWaitKey(0);
+		tecla = cvWaitKey(0);
 	}
 
 
@@ -595,7 +595,7 @@ int main( int argc, char** argv )
 	// *****************************************************************************************************************************************
 	// *****************************************************************************************************************************************
 	// TRAINING SAMPLES 
-	// SCHOOL
+	// OTHER
 	// Lisa Train: 33 items: lisa1.bmp - lisa33.bmp
 	// The code below is exactly the same for HOMER, except that we have changed the values of iNum and Homer -> Lisa
 	// along the file
@@ -622,10 +622,10 @@ int main( int argc, char** argv )
 		// Creates a header and allocates memory (tam) to store a copy of the original image.
 		// 1 - gray level image
 		// 3 - color image	
-		// processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
+		 processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
 
 		// Make a image clone and store it at processed and threshold
-		//processed 	= cvCloneImage( img );
+		processed 	= cvCloneImage( img );
 		//threshold  	= cvCloneImage( img );
 
 		// Initialize variables with zero 
@@ -730,18 +730,18 @@ int main( int argc, char** argv )
 
 
 		// Finally, give a look at the original image and the image with the pixels of interest in green
-		//cvShowImage( "Original", img );
-		//cvShowImage( "Processed", processed );
+		cvShowImage( "Original", img );
+		cvShowImage( "Processed", processed );
 
 		// Wait until a key is pressed to continue... 	
-		//tecla = cvWaitKey(0);
+		tecla = cvWaitKey(0);
 	}
 
 	// *****************************************************************************************************************************************
 	// *****************************************************************************************************************************************
 	// *****************************************************************************************************************************************
 	// TRAINING SAMPLES 
-	// OTHER
+	// SCOOL
 	// Lisa Train: 33 items: lisa1.bmp - lisa33.bmp
 	// The code below is exactly the same for HOMER, except that we have changed the values of iNum and Homer -> Lisa
 	// along the file
@@ -768,10 +768,10 @@ int main( int argc, char** argv )
 		// Creates a header and allocates memory (tam) to store a copy of the original image.
 		// 1 - gray level image
 		// 3 - color image	
-		// processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
+		processed = cvCreateImage( tam, IPL_DEPTH_8U, 3);
 
 		// Make a image clone and store it at processed and threshold
-		//processed 	= cvCloneImage( img );
+		processed 	= cvCloneImage( img );
 		//threshold  	= cvCloneImage( img );
 
 		// Initialize variables with zero 
@@ -876,18 +876,18 @@ int main( int argc, char** argv )
 
 
 		// Finally, give a look at the original image and the image with the pixels of interest in green
-		//cvShowImage( "Original", img );
-		//cvShowImage( "Processed", processed );
+		cvShowImage( "Original", img );
+		cvShowImage( "Processed", processed );
 
 		// Wait until a key is pressed to continue... 	
-		//tecla = cvWaitKey(0);
+		tecla = cvWaitKey(0);
 	}
 
 
 	cvReleaseImage(&img);
 	cvDestroyWindow("Original");
 
-	//cvReleaseImage(&processed);
+	cvReleaseImage(&processed);
 	cvDestroyWindow("Processed");
 
 	fclose(fp);
